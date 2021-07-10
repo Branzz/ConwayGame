@@ -1,0 +1,31 @@
+<resources>
+	<string name="app_name">Life Game</string>
+	<string name="level_data">
+		3,3,
+		000
+		030
+		000;
+		3,4,
+		0202
+		0000
+		02020;
+		3,3,
+		300
+		504
+		002;
+		4,7,
+		0022020
+		0020022
+		3200203
+		0022302;
+		8,8,
+		05504030
+		04503000
+		40003002
+		02050000
+		40202000
+		02040032
+		20000005
+		04003000</string>
+	<string name="start">start</string>
+</resources>
