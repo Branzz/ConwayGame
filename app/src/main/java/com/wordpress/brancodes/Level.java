@@ -5,27 +5,40 @@ import static com.wordpress.brancodes.Tile.*;
 public class Level {
 
 	private final Tile[][] tiles;
+	private final int[] tileData;
 	private final int rows;
 	private final int columns;
 
-	public Level(Tile[][] tiles) {
+	public Level(final Tile[][] tiles, final int rows, final int columns) {
 		this.tiles = tiles;
-		this.rows = tiles.length;
-		this.columns = tiles[0].length;
-	}
-
-	public Level(int rows, int columns) { // random grid
 		this.rows = rows;
 		this.columns = columns;
-		this.tiles = randomGrid(rows, columns);
+		tileData = new int[rows * columns];
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++) {
+				tileData[r * columns + c] = tiles[r][c].ordinal();
+			}
+	}
+
+	public Level(Tile[][] tiles) {
+		this(tiles, tiles.length, tiles[0].length);
+	}
+
+	public Level(final int rows, final int columns) { // random grid
+		this(randomGrid(rows, columns), rows, columns);
 	}
 
 	public Level(final String[] levelParameters) {
-		this(new Tile[Integer.parseInt(levelParameters[0])][Integer.parseInt(levelParameters[1])]);
+		this.rows = Integer.parseInt(levelParameters[0]);
+		this.columns = Integer.parseInt(levelParameters[1]);
+		this.tiles = new Tile[rows][columns];
+		tileData = new int[rows * columns];
 		Tile[] tileValues = Tile.values();
 		for (int i = 0; i < rows; i++)
-			for (int j = 0; j < columns; j++)
+			for (int j = 0; j < columns; j++) {
 				tiles[i][j] = tileValues[levelParameters[2].charAt(i * columns + j) - '0'];
+				tileData[i * columns + j] = tiles[i][j].ordinal();
+			}
 	}
 
 	public Tile[][] step() {
@@ -82,6 +95,18 @@ public class Level {
 
 	public Tile getTile(int r, int c) {
 		return tiles[r][c];
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public int getColumns() {
+		return columns;
+	}
+
+	public int[] getTileData() {
+		return tileData;
 	}
 
 }

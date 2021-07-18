@@ -37,10 +37,7 @@ public abstract class DefaultActivity extends AppCompatActivity {
 	}
 
 	private void hideNavBar() {
-		System.out.println("system visibility change heard");
-
-		getWindow().getDecorView()
-				   .setSystemUiVisibility(DEFAULT_VIEW_FLAGS);
+		getWindow().getDecorView().setSystemUiVisibility(DEFAULT_VIEW_FLAGS);
 	}
 
 }

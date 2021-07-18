@@ -6,147 +6,47 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		tools:context=".GameActivity"
-		android:background="#3F4A4E">
+		android:background="#425E68"
+		android:id="@+id/gameLayout"
+		android:onClick="helpButtonClicked"
+		>
 
 	<Button
-			android:text="Run"
-			android:layout_width="191dp"
-			android:layout_height="94dp"
+			android:text="@string/run"
+			android:layout_width="167dp"
+			android:layout_height="84dp"
 			android:id="@+id/runButton"
 			android:onClick="runButtonClicked"
-			android:backgroundTint="#8BC34A"
+			android:backgroundTint="@color/runColor"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
 			android:fontFamily="sans-serif-condensed"
-			app:layout_constraintHorizontal_bias="0.502"
-			app:layout_constraintTop_toBottomOf="@+id/buttons3x3"
 			android:textSize="40sp"
-			/>
-
-	<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="325dp"
-			android:layout_height="325dp"
-			android:id="@+id/buttons3x3"
-			app:layout_constraintTop_toTopOf="parent"
+			android:insetBottom="0dp"
+			android:insetTop="0dp"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
+			android:layout_marginBottom="70dp"/>
+
+	<fragment
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:name="com.wordpress.brancodes.GameBoardFragment"
+			android:id="@+id/fragment_game_board"
+			app:layout_constraintDimensionRatio="1.0"
+			app:layout_constraintBottom_toTopOf="@+id/runButton"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintVertical_bias="0.333"
-			app:layout_constraintHorizontal_bias="0.514">
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/helpButton"/>
 
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button1"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
+	<Button
+			android:text="@string/questionMark"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:id="@+id/helpButton"
+			android:background="@drawable/circle_button"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			android:insetRight="6dp"
+			android:insetLeft="6dp"/>
 
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button2"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintEnd_toEndOf="@+id/button3"
-				app:layout_constraintStart_toStartOf="@+id/button1"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button3"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button4"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button5"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="@+id/button6"
-				app:layout_constraintStart_toStartOf="@+id/button4"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button6"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button7"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button8"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="@+id/button9"
-				app:layout_constraintStart_toStartOf="@+id/button7"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="100dp"
-				android:id="@+id/button9"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				android:onClick="buttonPanelClick"
-				android:backgroundTint="#FFFFFF"
-				android:insetBottom="0dp"
-				android:insetTop="0dp"
-				android:textAllCaps="false"/>
-	</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

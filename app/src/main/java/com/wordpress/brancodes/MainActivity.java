@@ -23,7 +23,7 @@ public class MainActivity extends DefaultActivity {
 
 	public void launchGame(View v) {
 		final Intent intent = new Intent(this, GameActivity.class);
-		intent.putExtra("A", "k");
+		// intent.putExtra("A", "k");
 		startActivity(intent);
 	}
 
