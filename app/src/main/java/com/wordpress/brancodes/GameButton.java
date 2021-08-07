@@ -18,6 +18,12 @@ public class GameButton {
 		refreshColor();
 	}
 
+	public void click() {
+		tileType = tileType.opposite();
+		refreshColor();
+
+	}
+
 	public void refreshColor() {
 		button.setBackgroundColor(tileType.color());
 		button.setTextColor(tileType.textColor());
@@ -28,7 +34,8 @@ public class GameButton {
 	}
 
 	public void updateText() {
-		button.setText(String.valueOf(neighbors));
+		if (tileType.caresAboutFill())
+			button.setText(String.valueOf(neighbors));
 	}
 
 	public void removeText() {

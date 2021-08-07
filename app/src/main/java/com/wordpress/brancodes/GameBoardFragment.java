@@ -1,12 +1,8 @@
 package com.wordpress.brancodes;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.*;
+import android.util.TypedValue;
+import android.view.*;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +21,7 @@ public class GameBoardFragment extends Fragment {
 	private static final String ROWS = "rows";
 	private static final String COLUMNS = "columns";
 	private static final String BOARD_DATA = "boardData";
+	private static final String ALL_CLICKABLE = "coloredCellsClickable";
 
 	public static final long FRAME_LENGTH = 1_100; // milliseconds
 	private HandlerThread handlerThread;
@@ -37,20 +34,22 @@ public class GameBoardFragment extends Fragment {
 	private int rows;
 	private int columns;
 	private int[] boardData;
-	GameButton[][] gameButtons;
-	private Map<View, GameButton> buttonMap = new HashMap<>(); // to track which button was clicked
+	private boolean coloredCellsClickable;
+	private GameButton[][] gameButtons;
+	private final Map<View, GameButton> buttonMap = new HashMap<>(); // to track which button was clicked
 	private boolean stepAnimation;
 
 	public GameBoardFragment() {
 		// Required empty public constructor
 	}
 
-	public static GameBoardFragment newInstance(int rows, int columns, int[] boardData) {
+	public static GameBoardFragment newInstance(int rows, int columns, int[] boardData, boolean coloredCellsClickable) {
 		GameBoardFragment fragment = new GameBoardFragment();
 		Bundle args = new Bundle();
 		args.putInt(ROWS, rows);
 		args.putInt(COLUMNS, columns);
 		args.putIntArray(BOARD_DATA, boardData);
+		args.putBoolean(ALL_CLICKABLE, coloredCellsClickable);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -62,6 +61,7 @@ public class GameBoardFragment extends Fragment {
 			rows = getArguments().getInt(ROWS);
 			columns = getArguments().getInt(COLUMNS);
 			boardData = getArguments().getIntArray(BOARD_DATA);
+			coloredCellsClickable = getArguments().getBoolean(ALL_CLICKABLE);
 			gameButtons = new GameButton[rows][columns];
 			stepAnimation = false;
 			handlerThread = new HandlerThread("gameBoardStepAnimation", 3);
@@ -69,7 +69,7 @@ public class GameBoardFragment extends Fragment {
 			looper = handlerThread.getLooper();
 			stepNextBoard = () -> {
 				while (stepAnimation) {
-					System.out.println("oeu");
+					System.out.println("animating...");
 					setBoard(getNextBoard());
 					for (int r = 0; r < rows; r++)
 						for (int c = 0; c < columns; c++)
@@ -102,27 +102,26 @@ public class GameBoardFragment extends Fragment {
 		final Tile[] tileValues = Tile.values();
 		for (int r = 0; r < rows; r++)
 			for (int c = 0; c < columns; c++) {
-				// GridLayout x = (GridLayout) LayoutInflater.from(getContext()).inflate(R.layout.button_template, grid);
-				Button button = (Button) LayoutInflater.from(getContext()).inflate(R.layout.button_template, null);
+				final int minLength = Math.min(rows, columns);
+				final Button button = (Button) LayoutInflater.from(getContext()).inflate(minLength >= 6 ? R.layout.button_small_template : R.layout.button_template, null);
 				grid.addView(button);
-
-				button.setLayoutParams(new GridLayout.LayoutParams(GridLayout.spec(r, GridLayout.FILL, 1.0F), GridLayout.spec(c, GridLayout.FILL, 1.0F)));
-				// button.getRootWindowInsets().inset(0,0,0,0);
-				Tile tile = tileValues[boardData[r * columns + c]];
-				GameButton gameButton = new GameButton(button, tile, r, c);
+				final GridLayout.LayoutParams layoutParams = ((GridLayout.LayoutParams) button.getLayoutParams());
+				layoutParams.height = layoutParams.width = 0;
+				layoutParams.rowSpec    = GridLayout.spec(r, GridLayout.FILL, 1.0F);
+				layoutParams.columnSpec = GridLayout.spec(c, GridLayout.FILL, 1.0F);
+				// layoutParams.setGravity(Gravity.FILL);
+				button.setLayoutParams(layoutParams);
+				// WindowInsets buttonInsets = new WindowInsets()
+				// button.getRootWindowInsets().inset(0,0,0,0); // TODO insets
+				// final int inset = (int) Math.pow(2, (2.8) - minLength / 3.0);
+				// setInsets(button, inset);
+				button.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) Math.pow(2, (67.0 / 12.0) - minLength / 4.25));
+				// System.out.println((float) Math.pow(2, 67.0 / 12.0 - (rows + columns) / 2.0 / 3.0));
+				final Tile tile = tileValues[boardData[r * columns + c]];
+				final GameButton gameButton = new GameButton(button, tile, r, c);
 				gameButtons[r][c] = gameButton;
 				buttonMap.put(button, gameButton);
-				button.setId(2_000_000 + r * columns + c);
-				// button.setMinWidth(0);
-				// button.setMinHeight(0);
-				button.setWidth(22);
-				// button.setHeight(22);
-				if (tile == Tile.EMPTY || tile == Tile.FILLED) {
-					button.setOnClickListener(v -> buttonPanelClick(buttonMap.get(v)));
-					button.setClickable(true);
-				} else {
-					button.setClickable(false);
-				}
+				// button.setId(2_000_000 + r * columns + c);
 			}
 		for (int r = 0; r < rows; r++)
 			for (int c = 0; c < columns; c++)
@@ -130,22 +129,28 @@ public class GameBoardFragment extends Fragment {
 					changeNeighborCount(r, c, true);
 		if (showNeighborCount)
 			for (int r = 0; r < rows; r++)
-				for (int c = 0; c < columns; c++)
+				for (int c = 0; c < columns; c++) {
 					gameButtons[r][c].updateText();
+				}
+		resetClickableButtons();
 	}
 
+	// private void setInsets(View v, int inset) {
+	// 	try {
+	// 		Insets k = v.getOpticalInsets();
+	// 		Field insetField = View.class.getDeclaredField("mLayoutInsets");
+	// 		insetField.setAccessible(true);
+	// 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+	// 			insetField.set(v, Insets.of(new Rect(inset, inset, inset, inset)));
+	// 		}
+	// 	} catch (NoSuchFieldException | IllegalAccessException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
 	public void buttonPanelClick(GameButton gameButton) {
-		Tile tile = gameButton.getTileType();
-		if (tile == Tile.EMPTY) {
-			gameButton.setTileType(Tile.FILLED);
-			gameButton.refreshColor();
-			changeNeighborCount(gameButton.getX(), gameButton.getY(), true);
-		} else if (tile == Tile.FILLED) {
-			gameButton.setTileType(Tile.EMPTY);
-			gameButton.refreshColor();
-			changeNeighborCount(gameButton.getX(), gameButton.getY(), false);
-		}
-		System.out.println(gameButton.getButton().getWidth());
+		gameButton.click();
+		changeNeighborCount(gameButton.getX(), gameButton.getY(), gameButton.getTileType().isFilled());
 	}
 
 	private void changeNeighborCount(int row, int column, boolean increase) {
@@ -194,10 +199,11 @@ public class GameBoardFragment extends Fragment {
 		stepAnimation = true;
 		for (int r = 0; r < rows; r++)
 			for (int c = 0; c < columns; c++) {
-				gameButtons[r][c].removeText();
-				gameButtons[r][c].getButton().setClickable(true);
-				if (!(gameButtons[r][c].getTileType() == Tile.EMPTY || gameButtons[r][c].getTileType() == Tile.FILLED))
-					gameButtons[r][c].getButton().setOnClickListener(v -> buttonPanelClick(buttonMap.get(v)));
+				final GameButton gameButton = gameButtons[r][c];
+				gameButton.removeText();
+				gameButton.getButton().setClickable(true);
+				if (!(gameButton.getTileType() == Tile.EMPTY || gameButton.getTileType() == Tile.FILLED))
+					gameButton.getButton().setOnClickListener(v -> buttonPanelClick(buttonMap.get(v)));
 			}
 		handler.post(stepNextBoard);
 		// Runnable setNextBoard = null;
@@ -217,6 +223,29 @@ public class GameBoardFragment extends Fragment {
 	public void stopStepAnimation() {
 		handler.removeCallbacks(stepNextBoard);
 		stepAnimation = false;
+	}
+
+	public void resetClickableButtons() {
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++) {
+				final Button button = gameButtons[r][c].getButton();
+				final Tile tile = gameButtons[r][c].getTileType();
+				if (coloredCellsClickable || stepAnimation || tile == Tile.EMPTY || tile == Tile.FILLED) {
+					button.setOnClickListener(v -> buttonPanelClick(buttonMap.get(v)));
+					button.setClickable(true);
+				} else {
+					button.setClickable(false);
+					// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					// 	button.setFocusable(View.NOT_FOCUSABLE);
+					// }
+				}
+			}
+	}
+
+	public void deClickableButtons() {
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++)
+				gameButtons[r][c].getButton().setClickable(false);
 	}
 
 	@Override

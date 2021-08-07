@@ -1,33 +1,61 @@
 package com.wordpress.brancodes;
 
-import android.graphics.Color;
-
+import android.content.Context;
+import androidx.core.content.res.ResourcesCompat;
 public enum Tile {
-	EMPTY(false, false, false, Color.rgb(255, 255, 255), Color.rgb(0, 0, 0)), // empty
-	FILLED(true, true, false, Color.rgb(0, 0, 0), Color.rgb(255, 255, 255)), // filled by player
-	TOFILL_EMPTY(false, true, true, Color.rgb(115, 115, 255), Color.rgb(255, 20, 20)), // to be filled (empty)
-	TOFILL_FILL(true, true, true, Color.rgb(15, 15, 100), Color.rgb(255, 80, 80)), // to be filled (filled)
-	TOEMPTY_EMPTY(false, false, true, Color.rgb(255, 115, 115), Color.rgb(20, 20, 255)), // to be unfilled (empty)
-	TOEMPTY_FILL(true, false, true, Color.rgb(100, 15, 15), Color.rgb(80, 80, 255)), // to be unfilled (filled)
-	TOFILL_CORRECT(true, true, false, Color.rgb(40, 40, 40), Color.rgb(0, 0, 0)),
-	TOEMPTY_CORRECT(false, false, false, Color.rgb(150, 150, 150), Color.rgb(0, 0, 0));
+	EMPTY(false, false, false, R.color.light, R.color.dark), // empty
+	FILLED(true, true, false, R.color.dark, R.color.light), // filled by player
+	TO_FILL_EMPTY(false, true, true, R.color.blue, R.color.dark), // to be filled (empty)
+	TO_FILL_FILL(true, true, true, R.color.darkBlue, R.color.light), // to be filled (filled)
+	TO_EMPTY_EMPTY(false, false, true, R.color.lightRed, R.color.dark), // to be unfilled (empty)
+	TO_EMPTY_FILL(true, false, true, R.color.darkRed, R.color.light), // to be unfilled (filled)
+	TO_FILL_CORRECT(true, true, false, R.color.green, R.color.dark),
+	TO_EMPTY_CORRECT(false, false, false, R.color.green, R.color.dark);
 
 	private final boolean filled;
 	private final boolean targetFill;
 	private final boolean caresAboutFill;
-	private final int color;
-	private final int textColor;
+	private final int colorID;
+	private int color = 0;
+	private final int textColorID;
+	private int textColor = 0;
+	private Tile opposite;
 
-	Tile(boolean filled, boolean targetFill, boolean caresAboutFill, int color, int textColor) {
+	static {
+		EMPTY.opposite = FILLED;
+		FILLED.opposite = EMPTY;
+		TO_FILL_EMPTY.opposite = TO_FILL_FILL;
+		TO_FILL_FILL.opposite = TO_FILL_EMPTY;
+		TO_EMPTY_EMPTY.opposite = TO_EMPTY_FILL;
+		TO_EMPTY_FILL.opposite = TO_EMPTY_EMPTY;
+		TO_FILL_CORRECT.opposite = TO_EMPTY_CORRECT;
+		TO_EMPTY_CORRECT.opposite = TO_FILL_CORRECT;
+	}
+
+	Tile(boolean filled, boolean targetFill, boolean caresAboutFill, int colorID, int textColorID) {
 		this.filled = filled;
 		this.targetFill = targetFill;
 		this.caresAboutFill = caresAboutFill;
-		this.color = color;
-		this.textColor = textColor;
+		this.colorID = colorID;
+		this.textColorID = textColorID;
+	}
+
+	/**
+	 * To be called by an activity once, before tile colors are used
+	 */
+	public static void generateColors(Context context) {
+		for (Tile tile : values()) {
+			tile.color = ResourcesCompat.getColor(context.getResources(), tile.colorID, null);
+			tile.textColor = ResourcesCompat.getColor(context.getResources(), tile.textColorID, null);
+		}
 	}
 
 	public boolean isFilled() {
 		return filled;
+	}
+
+	public boolean caresAboutFill() {
+		return caresAboutFill;
 	}
 
 	public boolean isCorrect(boolean isFilled) {
@@ -42,15 +70,8 @@ public enum Tile {
 		return textColor;
 	}
 
-	/*
-	 1 : return FILLED;
-	 2 : return TOFILL_EMPTY;
-	 3 : return TOFILL_FILL;
-	 4 : return TOEMPTY_EMPTY;
-	 5 : return TOEMPTY_FILL;
-	 6 : return TOEMPTY_CORRECT;
-	 7 : return TOFILL_CORRECT;
-	 0 : EMPTY
-	 */
+	public Tile opposite() {
+		return opposite;
+	}
 
 }

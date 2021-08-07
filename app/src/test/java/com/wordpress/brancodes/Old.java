@@ -15,6 +15,16 @@ public interface Old {
 
 	boolean stop();
 
+	/* old standard
+	 1 : return FILLED;
+	 2 : return TOFILL_EMPTY;
+	 3 : return TOFILL_FILL;
+	 4 : return TOEMPTY_EMPTY;
+	 5 : return TOEMPTY_FILL;
+	 6 : return TOEMPTY_CORRECT;
+	 7 : return TOFILL_CORRECT;
+	 0 : EMPTY	*/
+
 	// private View lastButton;
 	//
 	// public void toggle(View v) {

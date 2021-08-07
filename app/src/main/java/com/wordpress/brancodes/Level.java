@@ -1,8 +1,13 @@
 package com.wordpress.brancodes;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import static com.wordpress.brancodes.Tile.*;
 
 public class Level {
+
+	private static final Random RANDOM = new Random();
 
 	private final Tile[][] tiles;
 	private final int[] tileData;
@@ -24,8 +29,17 @@ public class Level {
 		this(tiles, tiles.length, tiles[0].length);
 	}
 
-	public Level(final int rows, final int columns) { // random grid
-		this(randomGrid(rows, columns), rows, columns);
+	public Level(int rows, int columns, boolean coloredCellsClickable) { // random grid
+		// this(randomGrid(rows, columns), rows, columns);
+		tiles = new Tile[rows][columns];
+		this.rows = rows;
+		this.columns = columns;
+		generateDeterministicLevel(coloredCellsClickable);
+		tileData = new int[rows * columns];
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++) {
+				tileData[r * columns + c] = tiles[r][c].ordinal();
+			}
 	}
 
 	public Level(final String[] levelParameters) {
@@ -47,22 +61,17 @@ public class Level {
 			for (int c = 0; c < columns; c++) {
 				int count = 0;
 				for (int i = -1; i <= 1; i++)
-					for (int j = -1; i <= 1; j++)
+					for (int j = -1; j <= 1; j++)
 						if (i != 0 && j != 0)
 							count += getTileRanged(r + i, c + j);
-				if (count == 3)
-					nextState[r][c] = FILLED;
-				if (count == 4 && getTileRanged(r, c) == 1)
+				if (count == 3 || count == 2 && getTileRanged(r, c) == 1)
 					nextState[r][c] = FILLED;
 			}
 		return nextState;
 	}
 
 	private int getTileRanged(int r, int c) {
-		if (!(r < 0 || r > rows - 1 || c < 0 || c > columns - 1))
-			if (tiles[r][c] == TOFILL_EMPTY || tiles[r][c] == TOFILL_FILL || tiles[r][c] == TOEMPTY_FILL)
-				return 1;
-		return 0;
+		return r >= 0 && r <= rows - 1 && c >= 0 && c <= columns - 1 && tiles[r][c].isFilled() ? 1 : 0;
 	}
 
 	private static final double SPREAD = .2;
@@ -74,27 +83,87 @@ public class Level {
 				double seed = Math.random();
 				tiles[r][c] = EMPTY;
 				if (seed > 1 - 4 * SPREAD)
-					tiles[r][c] = TOFILL_EMPTY;
+					tiles[r][c] = TO_FILL_EMPTY;
 				if (seed > 1 - 3 * SPREAD)
-					tiles[r][c] = TOFILL_FILL;
+					tiles[r][c] = TO_FILL_FILL;
 				if (seed > 1 - 2 * SPREAD)
-					tiles[r][c] = TOEMPTY_EMPTY;
+					tiles[r][c] = TO_EMPTY_EMPTY;
 				if (seed > 1 - SPREAD)
-					tiles[r][c] = TOEMPTY_FILL;
+					tiles[r][c] = TO_EMPTY_FILL;
 			}
 		return tiles;
 	}
 
-	public int getColor(int r, int c) {
-		return tiles[r][c].color();
+	public void generateDeterministicLevel(boolean coloredCellsClickable) {
+		do {
+			boolean[][] randomFills = new boolean[rows][columns];
+			for (int r = 0; r < rows; r++)
+				for (int c = 0; c < columns; c++) {
+					randomFills[r][c] = RANDOM.nextBoolean();
+				}
+
+			for (int r = 0; r < rows; r++) {
+				for (int c = 0; c < columns; c++) {
+					if (RANDOM.nextBoolean()) {
+						int count = 0;
+						for (int i = -1; i <= 1; i++)
+							for (int j = -1; j <= 1; j++)
+								if (i != 0 || j != 0)
+									count += getTileRanged(r + i, c + j, randomFills);
+						if (count == 3 || count == 2 && randomFills[r][c]) {
+							if (coloredCellsClickable)
+								// tiles[r][c] = RANDOM.nextBoolean() ? TO_FILL_FILL : TO_FILL_EMPTY;
+								tiles[r][c] = TO_FILL_EMPTY;
+							else
+								tiles[r][c] = randomFills[r][c] ? TO_FILL_FILL : TO_FILL_EMPTY;
+						} else {
+							if (coloredCellsClickable)
+								// tiles[r][c] = RANDOM.nextBoolean() ? TO_EMPTY_FILL : TO_EMPTY_EMPTY;
+								tiles[r][c] = TO_EMPTY_EMPTY;
+							else
+								tiles[r][c] = randomFills[r][c] ? TO_EMPTY_FILL : TO_EMPTY_EMPTY;
+						}
+					} else {
+						tiles[r][c] = EMPTY;
+					}
+				}
+			}
+			// System.out.println(Arrays.deepToString(tiles));
+			// System.out.println("->");
+		} while (checkSolution());
 	}
 
-	public Tile[][] getTiles() {
-		return tiles;
+	private int getTileRanged(int r, int c, boolean[][] grid) {
+		if (!(r < 0 || r > rows - 1 || c < 0 || c > columns - 1))
+			if (grid[r][c])
+				return 1;
+		return 0;
 	}
 
-	public Tile getTile(int r, int c) {
-		return tiles[r][c];
+	public boolean checkSolution() {
+		boolean[][] nextBoard = getNextBoard();
+		// System.out.println(Arrays.deepToString(nextBoard));
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++) {
+				// System.out.print(tiles[r][c] + " " + nextBoard[r][c] + " " + !tiles[r][c].isCorrect(nextBoard[r][c]) + ",");
+				if (!tiles[r][c].isCorrect(nextBoard[r][c]))
+					return false;
+			}
+		// System.out.println();
+		return true;
+	}
+
+	private boolean[][] getNextBoard() {
+		final boolean[][] nextBoard = new boolean[rows][columns];
+		for (int r = 0; r < rows; r++)
+			for (int c = 0; c < columns; c++) {
+				int count = getTileRanged(r - 1, c - 1) + getTileRanged(r - 1, c) + getTileRanged(r - 1, c + 1)
+						  + getTileRanged(r,	 c - 1)							  + getTileRanged(r,	 c + 1)
+						  + getTileRanged(r + 1, c - 1) + getTileRanged(r + 1, c) + getTileRanged(r + 1, c + 1);
+				// System.out.print((tiles[r][c].isFilled() ? 'F' : '0') + "," + count + " ");
+				nextBoard[r][c] = count == 3 || (count == 2 && getTileRanged(r, c) == 1);
+			}
+		return nextBoard;
 	}
 
 	public int getRows() {

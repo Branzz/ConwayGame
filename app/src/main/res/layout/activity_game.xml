@@ -3,29 +3,30 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:tools="http://schemas.android.com/tools"
 		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:ads="http://schemas.android.com/apk/res-auto"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		tools:context=".GameActivity"
-		android:background="#425E68"
+		android:background="@color/neutral"
 		android:id="@+id/gameLayout"
-		android:onClick="helpButtonClicked"
+		android:clickable="false"
 		>
 
 	<Button
 			android:text="@string/run"
-			android:layout_width="167dp"
-			android:layout_height="84dp"
+			android:layout_width="165dp"
+			android:layout_height="76dp"
 			android:id="@+id/runButton"
 			android:onClick="runButtonClicked"
-			android:backgroundTint="@color/runColor"
+			android:backgroundTint="@color/green"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			android:fontFamily="sans-serif-condensed"
+			android:fontFamily="@string/defaultFont"
 			android:textSize="40sp"
 			android:insetBottom="0dp"
 			android:insetTop="0dp"
-			app:layout_constraintBottom_toBottomOf="parent"
-			android:layout_marginBottom="70dp"/>
+			app:layout_constraintBottom_toTopOf="@+id/adView"
+			android:layout_marginBottom="24dp"/>
 
 	<fragment
 			android:layout_width="0dp"
@@ -36,7 +37,10 @@
 			app:layout_constraintBottom_toTopOf="@+id/runButton"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/helpButton"/>
+			app:layout_constraintTop_toBottomOf="@+id/levelNumberText"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintVertical_bias="0.4"/>
+	<!--	tools:layout="@layout/button_small_template"-->
 
 	<Button
 			android:text="@string/questionMark"
@@ -44,9 +48,231 @@
 			android:layout_height="50dp"
 			android:id="@+id/helpButton"
 			android:background="@drawable/circle_button"
+			android:backgroundTint="@color/blueBell"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="10dp"
+			android:insetTop="0dp"
+			android:insetRight="0dp"
+			android:insetBottom="0dp"
+			android:insetLeft="0dp"
+			android:onClick="helpButtonClicked"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"/>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+			android:name="com.wordpress.brancodes.HelpMenuFragment"
+			android:layout_width="328dp"
+			android:layout_height="472dp"
+			android:id="@+id/helpMenu"
+			android:background="@color/dark"
+			android:visibility="invisible"
+			android:layout_marginBottom="28dp"
+			android:elevation="2dp"
+			app:layout_constraintBottom_toTopOf="@+id/adView"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:context=".HelpMenuFragment"
+			tools:visibility="visible"
+			>
+
+		<Button
+				android:insetTop="3dp"
+				android:insetBottom="3dp"
+				android:insetRight="3dp"
+				android:insetLeft="3dp"
+				android:backgroundTint="@color/blue"
+				android:textSize="24sp"
+				android:paddingStart="0dp"
+				android:paddingLeft="0dp"
+				android:paddingTop="0dp"
+				android:paddingEnd="0dp"
+				android:paddingRight="0dp"
+				android:paddingBottom="0dp"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:id="@+id/blueButton"
+				app:layout_constraintEnd_toStartOf="@+id/blueHelpText"
+				app:layout_constraintStart_toStartOf="parent"
+				android:text="3"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintBottom_toTopOf="@+id/darkBlueButton"
+				android:clickable="false"/>
+
+		<TextView
+				android:layout_width="200dp"
+				android:layout_height="wrap_content"
+				android:text="@string/blueHelpTextTip"
+				android:id="@+id/blueHelpText"
+				android:background="@color/neutral"
+				android:textColor="@color/light"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/blueButton"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintTop_toTopOf="@+id/blueButton"
+				app:layout_constraintBottom_toBottomOf="@+id/blueButton"
+				android:padding="4dp"/>
+
+		<Button
+				android:insetTop="3dp"
+				android:insetBottom="3dp"
+				android:insetRight="3dp"
+				android:insetLeft="3dp"
+				android:backgroundTint="@color/darkBlue"
+				android:textSize="24sp"
+				android:paddingStart="0dp"
+				android:paddingLeft="0dp"
+				android:paddingTop="0dp"
+				android:paddingEnd="0dp"
+				android:paddingRight="0dp"
+				android:paddingBottom="0dp"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:id="@+id/darkBlueButton"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintEnd_toStartOf="@+id/darkBlueHelpText"
+				android:text="2 or 3"
+				app:layout_constraintTop_toBottomOf="@+id/blueButton"
+				app:layout_constraintBottom_toTopOf="@+id/redButton"
+				android:clickable="false"/>
+
+		<TextView
+				android:layout_width="200dp"
+				android:layout_height="wrap_content"
+				android:text="@string/darkBlueHelpText"
+				android:id="@+id/darkBlueHelpText"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/darkBlueButton"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintTop_toTopOf="@+id/darkBlueButton"
+				android:background="@color/neutral"
+				app:layout_constraintBottom_toBottomOf="@+id/darkBlueButton"
+				android:textColor="@color/light"
+				android:padding="4dp"/>
+
+		<Button
+				android:insetTop="3dp"
+				android:insetBottom="3dp"
+				android:insetRight="3dp"
+				android:insetLeft="3dp"
+				android:backgroundTint="@color/lightRed"
+				android:textSize="24sp"
+				android:paddingStart="0dp"
+				android:paddingLeft="0dp"
+				android:paddingTop="0dp"
+				android:paddingEnd="0dp"
+				android:paddingRight="0dp"
+				android:paddingBottom="0dp"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:id="@+id/redButton"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintEnd_toStartOf="@+id/redHelpText"
+				android:text="Not 3"
+				app:layout_constraintTop_toBottomOf="@+id/darkBlueButton"
+				app:layout_constraintBottom_toTopOf="@+id/redBlueButton"
+				android:clickable="false"/>
+
+		<TextView
+				android:layout_width="200dp"
+				android:layout_height="wrap_content"
+				android:text="@string/redHelpTextTip"
+				android:id="@+id/redHelpText"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/redButton"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintTop_toTopOf="@+id/redButton"
+				android:background="@color/neutral"
+				app:layout_constraintBottom_toBottomOf="@+id/redButton"
+				android:textColor="@color/light"
+				android:padding="4dp"/>
+
+		<Button
+				android:insetTop="3dp"
+				android:insetBottom="3dp"
+				android:insetRight="3dp"
+				android:insetLeft="3dp"
+				android:backgroundTint="@color/darkRed"
+				android:textSize="20sp"
+				android:paddingStart="0dp"
+				android:paddingLeft="0dp"
+				android:paddingTop="0dp"
+				android:paddingEnd="0dp"
+				android:paddingRight="0dp"
+				android:paddingBottom="0dp"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:id="@+id/redBlueButton"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintEnd_toStartOf="@+id/darkRedHelpText"
+				android:text="Not 2 nor 3"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/redButton"
+				android:clickable="false"/>
+
+		<TextView
+				android:layout_width="200dp"
+				android:layout_height="wrap_content"
+				android:text="@string/darkRedHelpText"
+				android:id="@+id/darkRedHelpText"
+				android:background="@color/neutral"
+				android:textColor="@color/light"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/redBlueButton"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintTop_toTopOf="@+id/redBlueButton"
+				app:layout_constraintBottom_toBottomOf="@+id/redBlueButton"
+				android:padding="4dp"/>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<com.google.android.gms.ads.AdView
+			android:layout_width="320dp"
+			android:layout_height="50dp"
+			android:id="@+id/adView"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			ads:adSize="BANNER"
+			ads:adUnitId="ca-app-pub-1517056711479045/4455785291"/>
+
+	<Button
+			android:text="R"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:id="@+id/returnButton"
+			android:backgroundTint="@color/black"
+			android:layout_marginTop="10dp"
+			android:layout_marginStart="10dp"
+			android:insetTop="0dp"
+			android:insetRight="0dp"
+			android:insetBottom="0dp"
+			android:insetLeft="0dp"
+			android:onClick="returnButtonClicked"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+
+	<TextView
+			android:id="@+id/levelNumberText"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_marginTop="16dp"
+			android:textSize="28sp"
+			android:fontFamily="@string/defaultFont"
+			android:textColor="@color/light"
+
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			android:insetRight="6dp"
-			android:insetLeft="6dp"/>
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintHorizontal_bias="0.501"
+			android:textAlignment="center"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
