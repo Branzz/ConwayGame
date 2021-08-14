@@ -2,6 +2,7 @@ package com.wordpress.brancodes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class GameActivity extends DefaultActivity implements SharedPrefAccess {
@@ -33,6 +35,7 @@ public class GameActivity extends DefaultActivity implements SharedPrefAccess {
 	private boolean helpMenuVisible = false;
 	private boolean coloredCellsClickable;
 	private SharedPreferences sharedPrefs;
+	private String origination;
 
 	public GameActivity() {
 	}
@@ -57,6 +60,16 @@ public class GameActivity extends DefaultActivity implements SharedPrefAccess {
 			randomLevelMode = getIntent().getBooleanExtra("randomLevels", false);
 		coloredCellsClickable = getIntent().getBooleanExtra("coloredCellsClickable", true);
 
+		origination = getIntent().getStringExtra("origination");
+		final Button returnButton = findViewById(R.id.returnButton);
+		if (Objects.equals(origination, "levelActivity")) {
+			returnButton.setBackgroundResource(R.drawable.return_button);
+		} else {
+			returnButton.setBackgroundResource(R.drawable.menu_select_button);
+		}
+		findViewById(R.id.helpButton).setBackgroundResource(R.drawable.help_button);
+
+		// findViewById(R.id.helpMenu).setClipToOutline(true);
 		currentLevels = tutorialMode ? tutorialLevels : levels;
 		endLevelNumber = currentLevels.length - 1;
 
@@ -72,6 +85,10 @@ public class GameActivity extends DefaultActivity implements SharedPrefAccess {
 			loadRandomLevel();
 		else
 			loadLevel(currentLevels[currentLevelNumber]);
+	}
+
+	private <T> T def(T value, T default0) {
+		return value == null ? default0 : value;
 	}
 
 	private void generateLevels() {
@@ -91,7 +108,8 @@ public class GameActivity extends DefaultActivity implements SharedPrefAccess {
 
 	private void loadRandomLevel() {
 		int size = RANDOM.nextInt(5) + 4;
-		loadLevel(new Level(size + RANDOM.nextInt(2) - 1, size + RANDOM.nextInt(2) - 1, coloredCellsClickable));
+		// loadLevel(new Level(size + RANDOM.nextInt(2) - 1, size + RANDOM.nextInt(2) - 1, coloredCellsClickable));
+		loadLevel(new Level(4, 4, coloredCellsClickable));
 	}
 
 	private void loadLevel(Level level) {
@@ -109,7 +127,13 @@ public class GameActivity extends DefaultActivity implements SharedPrefAccess {
 		constraintSet.setDimensionRatio(R.id.fragment_game_board, String.valueOf((double) level.getColumns() / level.getRows()));
 		constraintSet.applyTo(gameLayout);
 
-		((TextView) findViewById(R.id.levelNumberText)).setText(String.valueOf(currentLevelNumber + 1));
+		if (!tutorialMode)
+			((TextView) findViewById(R.id.levelNumberText)).setText(String.valueOf(currentLevelNumber + 1));
+
+		// ======= level testing: ======= TODO
+
+		System.out.println(level);
+
 	}
 
 	public int getSavedCurrentLevel() {

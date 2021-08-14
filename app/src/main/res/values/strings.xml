@@ -16,6 +16,45 @@
 	<string name="darkRedHelpText">Kill this cell with anything but 2 or 3 living neighbors</string>
 	<string name="level_data">
 		3,3,
+		200
+		040
+		004;
+		3,3,
+		024
+		040
+		002;
+		3,3,
+		242
+		444
+		242;
+		3,3,
+		402
+		400
+		020;
+		3,3,
+		403
+		400
+		222;
+		3,3,
+		422
+		244
+		240;
+		3,3,
+		440
+		422
+		420;
+		3,3,
+		420
+		200
+		244;
+
+		4,4,
+		0000
+		0000
+		0000
+		0000;
+
+		3,3,
 		300
 		040
 		003;

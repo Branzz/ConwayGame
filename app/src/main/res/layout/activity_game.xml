@@ -26,7 +26,8 @@
 			android:insetBottom="0dp"
 			android:insetTop="0dp"
 			app:layout_constraintBottom_toTopOf="@+id/adView"
-			android:layout_marginBottom="24dp"/>
+			android:layout_marginBottom="24dp"
+			android:textColor="@color/light"/>
 
 	<fragment
 			android:layout_width="0dp"
@@ -43,12 +44,10 @@
 	<!--	tools:layout="@layout/button_small_template"-->
 
 	<Button
-			android:text="@string/questionMark"
+			android:id="@+id/helpButton"
+			android:src="@drawable/help_button"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
-			android:id="@+id/helpButton"
-			android:background="@drawable/circle_button"
-			android:backgroundTint="@color/blueBell"
 			android:layout_marginTop="10dp"
 			android:layout_marginEnd="10dp"
 			android:insetTop="0dp"
@@ -64,17 +63,17 @@
 			android:layout_width="328dp"
 			android:layout_height="472dp"
 			android:id="@+id/helpMenu"
-			android:background="@color/dark"
+			android:background="@drawable/popup_layout"
 			android:visibility="invisible"
 			android:layout_marginBottom="28dp"
 			android:elevation="2dp"
 			app:layout_constraintBottom_toTopOf="@+id/adView"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
 			tools:context=".HelpMenuFragment"
-			tools:visibility="visible"
-			>
+			tools:visibility="gone"
+			app:layout_constraintVertical_bias="0.4"
+			app:layout_constraintTop_toBottomOf="@+id/levelNumberText">
 
 		<Button
 				android:insetTop="3dp"
@@ -98,7 +97,8 @@
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintHorizontal_bias="0.5"
 				app:layout_constraintBottom_toTopOf="@+id/darkBlueButton"
-				android:clickable="false"/>
+				android:clickable="false"
+				android:textColor="@color/dark"/>
 
 		<TextView
 				android:layout_width="200dp"
@@ -137,7 +137,8 @@
 				android:text="2 or 3"
 				app:layout_constraintTop_toBottomOf="@+id/blueButton"
 				app:layout_constraintBottom_toTopOf="@+id/redButton"
-				android:clickable="false"/>
+				android:clickable="false"
+				android:textColor="@color/light"/>
 
 		<TextView
 				android:layout_width="200dp"
@@ -176,7 +177,8 @@
 				android:text="Not 3"
 				app:layout_constraintTop_toBottomOf="@+id/darkBlueButton"
 				app:layout_constraintBottom_toTopOf="@+id/redBlueButton"
-				android:clickable="false"/>
+				android:clickable="false"
+				android:textColor="@color/dark"/>
 
 		<TextView
 				android:layout_width="200dp"
@@ -215,7 +217,8 @@
 				android:text="Not 2 nor 3"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/redButton"
-				android:clickable="false"/>
+				android:clickable="false"
+				android:textColor="@color/light"/>
 
 		<TextView
 				android:layout_width="200dp"
@@ -245,11 +248,9 @@
 			ads:adUnitId="ca-app-pub-1517056711479045/4455785291"/>
 
 	<Button
-			android:text="R"
+			android:id="@+id/returnButton"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
-			android:id="@+id/returnButton"
-			android:backgroundTint="@color/black"
 			android:layout_marginTop="10dp"
 			android:layout_marginStart="10dp"
 			android:insetTop="0dp"

@@ -62,6 +62,9 @@ public class LevelSelectActivity extends DefaultActivity implements SharedPrefAc
 			// button.setId(2_100_000 + i);
 			button.setVisibility(View.VISIBLE);
 		}
+
+		findViewById(R.id.returnButton).setBackgroundResource(R.drawable.menu_select_button);
+
 		reColorTiles();
 		if (currentLevel == 0) // Enter first level if none were cleared yet
 			buttonPanelClick(0);
@@ -76,7 +79,7 @@ public class LevelSelectActivity extends DefaultActivity implements SharedPrefAc
 			button.setBackgroundColor(tileType.color());
 			button.setTextColor(tileType.textColor());
 			if (buttonIndex <= currentBestLevel) {
-				button.setOnClickListener(v -> buttonPanelClick(buttonMap.get(v)));
+				button.setOnClickListener(v -> buttonPanelClick(buttonMap.get(((Button) v))));
 				button.setClickable(true);
 			} else {
 				button.setClickable(false);
@@ -96,6 +99,7 @@ public class LevelSelectActivity extends DefaultActivity implements SharedPrefAc
 		// if (buttonNumber <= currentLevel) {
 			final Intent intent = new Intent(this, GameActivity.class);
 			intent.putExtra("levelNumber", buttonNumber);
+			intent.putExtra("origination", "levelActivity");
 			startActivity(intent);
 		// }
 	}
@@ -108,6 +112,10 @@ public class LevelSelectActivity extends DefaultActivity implements SharedPrefAc
 		sharedPrefs.edit()
 				   .putInt("currentLevel", currentLevel)
 				   .apply();
+	}
+
+	public void returnButtonClicked(View view) {
+		finish();
 	}
 
 }

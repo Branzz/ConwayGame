@@ -11,6 +11,21 @@
 		android:id="@+id/levelSelectConstraintLayout">
 
 
+	<Button
+			android:id="@+id/returnButton"
+			android:src="@drawable/menu_select_button"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginStart="10dp"
+			android:insetTop="0dp"
+			android:insetRight="0dp"
+			android:insetBottom="0dp"
+			android:insetLeft="0dp"
+			android:onClick="returnButtonClicked"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+
 	<androidx.gridlayout.widget.GridLayout
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintBottom_toBottomOf="parent"

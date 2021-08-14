@@ -2,6 +2,8 @@ package com.wordpress.brancodes;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import static com.wordpress.brancodes.Tile.*;
 
@@ -176,6 +178,17 @@ public class Level {
 
 	public int[] getTileData() {
 		return tileData;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Tile[] tileRow : tiles) {
+			for (Tile tile : tileRow)
+				sb.append(tile.ordinal());
+			sb.append('\n');
+		}
+		return rows + "," + columns + ",\n" + sb.substring(0, sb.length() - 1) + ';';
 	}
 
 }
